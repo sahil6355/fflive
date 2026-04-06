@@ -1,16 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,11 +14,67 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className="h-full antialiased">
+      <head>
+        {/* Google Adsense */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2493250444458383"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+
+        {/* Ad Manager */}
+        <Script id="adsense-admanager" strategy="afterInteractive">
+          {`
+            class AdManager {
+              constructor() {
+                if (window.__adManager) return window.__adManager;
+                this.adLoaded = false;
+                this.initialized = false;
+                window.__adManager = this;
+                this.init();
+              }
+
+              init() {
+                if (this.initialized) return;
+                this.initialized = true;
+                window.adsbygoogle = window.adsbygoogle || [];
+                this.adBreak = (o) => window.adsbygoogle.push(o);
+
+                this.adBreak({
+                  preloadAdBreaks: "on",
+                  sound: "on",
+                  onReady: () => {
+                    this.adLoaded = true;
+                  },
+                });
+              }
+
+              showStartAd(callback) {
+                if (!this.adLoaded) {
+                  callback({});
+                  return;
+                }
+
+                this.adBreak({
+                  type: "start",
+                  name: "fullscreen-start",
+                  adBreakDone: (result) => {
+                    callback(result || {});
+                  },
+                });
+              }
+            }
+
+            window.ads = new AdManager();
+          `}
+        </Script>
+      </head>
+
+      <body className="min-h-full flex flex-col">
+        {children}
+      </body>
     </html>
   );
 }
